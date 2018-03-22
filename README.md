@@ -1,6 +1,6 @@
 # monit_sdk
 用户操作数据采集
-Monit
+M2
 ============
 
 ## Monit中文文档
