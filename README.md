@@ -19,7 +19,7 @@ M2
         var s = document.createElement('script');
         s.type = 'text/javascript';
         s.async = true;
-        s.src = '//analysis.brandwisdom.cn/monit.js?t=' + new Date().getTime();
+        s.src = '埋点sdk地址?t=' + new Date().getTime();
         var x = document.getElementsByTagName('script')[0];
         x.parentNode.insertBefore(s, x);
   })();
