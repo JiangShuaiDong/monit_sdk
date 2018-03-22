@@ -247,7 +247,7 @@
         }
     };
     tool.init();
-    
+
     //浏览器相关信息
     var Browser = {
         init: function(){
@@ -256,12 +256,12 @@
                 url: Browser.getUrl(),
                 guid: Browser.getGuid(),
                 referrer: Browser.getReferrer(),
-                userAgent:Browser.ua,
+                ua:Browser.ua,
                 browser: Browser.getBrowser(),
-                viewportSize: Browser.getViewportSize(),
+                viewport: Browser.getViewportSize(),
                 lang: Browser.getLang(),
                 appenv: Browser.getAppenv(),
-                isAdmin: Browser.isAdmin
+                is_admin: Browser.isAdmin
             };
             tool.forIn(obj,function(key,value){
                 MONIT_CONIFG[key] = value;
@@ -451,7 +451,7 @@
                 var eleObj = {
                     m_type: 1,
                     attributes: $element.getAttributeList(_target,true),
-                    parentAttributes: $element.getAttributeList($element.parentNode(_target,"div"),false)
+                    parent_attributes: $element.getAttributeList($element.parentNode(_target,"div"),false)
                 };
                 tool.forIn(eleObj,function(key,value){
                     MONIT_CONIFG[key] = value;
@@ -583,7 +583,7 @@
     var $monit = {
         postMonit: function(){
             var setIMG = new Image();
-            var img_location = "http://analysis.brandwisdom.cn/tj.gif";
+            var img_location = "http://analysis.brandwisdom.cn/m.gif";
             var params = '';
             var user = tool.parseJSON($sessionStorage.get('M2_USER'));
             MONIT_CONIFG['pid'] = window.M2_PNAME || '';
@@ -689,10 +689,10 @@
         MONIT_CONIFG['m_type'] = 3;
         MONIT_CONIFG['cid'] = cid;
         MONIT_CONIFG['attributes'] = '';
-        MONIT_CONIFG['parentAttributes'] = '';
+        MONIT_CONIFG['parent_attributes'] = '';
         if(_target){
             MONIT_CONIFG['attributes'] = $element.getAttributeList(_target,true);
-            MONIT_CONIFG['parentAttributes'] = $element.getAttributeList($element.parentNode(_target,"div"),false);
+            MONIT_CONIFG['parent_attributes'] = $element.getAttributeList($element.parentNode(_target,"div"),false);
         }
         $monit.setAttrs(obj);
         $monit.postMonit();
@@ -703,10 +703,10 @@
         MONIT_CONIFG['m_type'] = 3;
         MONIT_CONIFG['cid'] = cid;
         MONIT_CONIFG['attributes'] = '';
-        MONIT_CONIFG['parentAttributes'] = '';
+        MONIT_CONIFG['parent_attributes'] = '';
         if(_target){
             MONIT_CONIFG['attributes'] = $element.getAttributeList(_target,true);
-            MONIT_CONIFG['parentAttributes'] = $element.getAttributeList($element.parentNode(_target,"div"),false);
+            MONIT_CONIFG['parent_attributes'] = $element.getAttributeList($element.parentNode(_target,"div"),false);
         }
         $monit.setAttrs(obj);
         $monit.postMonit();
