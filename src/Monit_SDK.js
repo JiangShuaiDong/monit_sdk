@@ -585,12 +585,11 @@
             var setIMG = new Image();
             var img_location = window.M2_URL || '';
             var params = '';
-            var user = tool.parseJSON($sessionStorage.get('M2_USER'));
+            var user = tool.parseJSON($sessionStorage.get('M2_USER')) || {};
             MONIT_CONIFG['pid'] = window.M2_PNAME || '';
             MONIT_CONIFG['uid'] = user.uid || '';
             MONIT_CONIFG['hid'] = user.hid || '';
             MONIT_CONIFG['custom_tag'] = $sessionStorage.get('M2_CUSTOM_TAG') || '';
-            console.log(img_location)
             if (!MONIT_CONIFG['pid'] && !img_location) {
                 throw new TypeError('M2_PNAME or M2_URL is not null....');
             }
