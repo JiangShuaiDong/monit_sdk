@@ -8,14 +8,16 @@ M2
 
 ### M2嵌入文档
 
- `M2_PNAME`参数为项目id为必填
+ `M2_PNAME` 和 `M2_URL`参数为项目id为必填
 
 ```js
 
 // 以下为判断逻辑。需要更改的话，请下载之后在此处修改依附逻辑。
  (function () {
-        var M2_PNAME = 'Moint_test'
+        var M2_PNAME = '项目ID'
+        var M2_URL = '发送数据地址'
         window['M2_PNAME'] = M2_PNAME;
+        window['M2_URL'] = M2_URL;
         var s = document.createElement('script');
         s.type = 'text/javascript';
         s.async = true;

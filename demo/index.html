@@ -31,11 +31,13 @@
    
   (function () {
         var M2_PNAME = 'Moint_test'
+        var M2_URL = 'http://analysis.brandwisdom.cn/m.gif'
         window['M2_PNAME'] = M2_PNAME;
+        window['M2_URL'] = M2_URL;
         var s = document.createElement('script');
         s.type = 'text/javascript';
         s.async = true;
-        s.src =  '//analysis.brandwisdom.cn/monit.js?t=' + new Date().getTime();
+        s.src =  '/src/Monit_SDK.js';
         var x = document.getElementsByTagName('script')[0];
         x.parentNode.insertBefore(s, x);
   })();
