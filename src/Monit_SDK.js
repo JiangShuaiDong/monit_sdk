@@ -17,6 +17,17 @@
 }(function () {
     "use strict";
     var MONIT_CONIFG = {};
+    var isLocal;
+	//有时候monit.js会在file://或者res://协议下使用，判断下
+    (function() {
+        isLocal = true;
+        try {
+            var protocol = location.protocol.toLowerCase();
+            if(protocol == 'http:' || protocol == 'https:') {
+                isLocal = false;
+            }
+        } catch(e) { }
+    })();
     var doc = document,
         nav = window.navigator,
         screen = window.screen,
@@ -382,14 +393,6 @@
             doc && doc.clientWidth && doc.clientHeight && ("CSS1Compat" === doc.compatMode || !g) ? vp = [doc.clientWidth, doc.clientHeight] : g && (vp = [doc.clientWidth, doc.clientHeight]);
             return tool.stringify({w:vp[0],h:vp[1]});
         },
-		isLocal: function() {
-            var _isLocal = true;
-            var protocol = window.location.protocol.toLowerCase();
-            if(protocol == 'http:' || protocol == 'https:') {
-                _isLocal = false;
-            }
-            return _isLocal;
-        },
         getGuid : function() {
             var guidKey = '__guid',
                 id = $cookie.get(guidKey);
@@ -419,7 +422,7 @@
                 return (Math.round(Math.random() * 2147483647) ^ hash(s)) * 2147483647;
             }
             if(!id) {
-                id = [ hash(Browser.isLocal() ? '' : doc.domain), guid(), +new Date + Math.random() + Math.random() ].join('.');
+                id = [ hash(isLocal ? '' : doc.domain), guid(), +new Date + Math.random() + Math.random() ].join('.');
 
                 var config = {
                     expires : 300,
