@@ -17,6 +17,12 @@
 }(function () {
     "use strict";
     var MONIT_CONIFG = {};
+    var doc = document,
+        nav = window.navigator,
+        screen = window.screen,
+        domain = isLocal ? '' : doc.domain.toLowerCase(),
+        ua = nav.userAgent.toLowerCase();
+
     var isType = function (type) {
         return function (obj) {
             return Object.prototype.toString.call(obj) === '[object ' + type + ']';
@@ -27,7 +33,7 @@
      */
     var $cookie = {
         get: function (name) {
-            var allCookie = '' + window.document.cookie;
+            var allCookie = '' + doc.cookie;
             var index = allCookie.indexOf(name);
             if (name === undefined || name === '' || index === -1) return '';
             var ind1 = allCookie.indexOf(';', index);
@@ -45,7 +51,7 @@
             if (domain) {
                 cookieValue += '; domain=' + domain;
             }
-            window.document.cookie = cookieValue;
+            doc.cookie = cookieValue;
         },
         remove: function (name) {
             if ($cookie.get(name)) {
@@ -129,6 +135,9 @@
      * 帮助函数
      */
     var tool = {
+        trim : function(s) {
+            return s.replace(/^[\s\xa0\u3000]+|[\u3000\xa0\s]+$/g, "");
+        },
         encodeObject2URIString: function (obj) {
             if (typeof obj === 'string') {
                 return obj;
@@ -252,11 +261,11 @@
     var Browser = {
         init: function(){
             var obj = {
-                title: document.title || '',
+                title: doc.title || '',
                 url: Browser.getUrl(),
                 guid: Browser.getGuid(),
                 referrer: Browser.getReferrer(),
-                ua:Browser.ua,
+                ua:ua,
                 browser: Browser.getBrowser(),
                 viewport: Browser.getViewportSize(),
                 lang: Browser.getLang(),
@@ -271,13 +280,11 @@
         getLang: function(){
             var _lang = $cookie.get('felangague');
             if(!_lang){
-                _lang = window.navigator.language || window.navigator.systemLanguage
+                _lang = nav.language || nav.systemLanguage
             }
             return _lang;
         },
-        ua: window.navigator.userAgent,
         getBrowser : function() {
-            var ua = Browser.ua.toLowerCase();
             var browsers = {
                 '360se-ua':'360se',
                 'TT':'tencenttraveler',
@@ -298,7 +305,10 @@
                 if(+external.twGetVersion(external.twGetSecurityID(window)).replace(/\./g,"") > 1013) {
                     is360se = true;
                 }
-            }catch(e){ }
+            }catch(err){ 
+
+                console.log(err);
+            }
 
             if(is360se) {
                 return "360se-noua";
@@ -335,7 +345,7 @@
             try {
                 url = location.href;
             } catch (e) {
-                url = document.createElement('a');
+                url = doc.createElement('a');
                 url.href = '';
                 url = url.href;
             }
@@ -346,7 +356,7 @@
             var referrerKey = "__referrer",
                 id = $sessionStorage.get(referrerKey),
                 newId = window.location.referrer,
-                url = document.URL || window.location.href;
+                url = doc.URL || window.location.href;
             if(!id){
                 if(newId && newId != id){
                     id = newId;
@@ -365,11 +375,11 @@
                 var doc = top.document.documentElement
                     , g = (e = top.document.body) && top.document.clientWidth && top.document.clientHeight;
             } catch (e) {
-                var doc = document.documentElement
-                    , g = (e = document.body) && document.clientWidth && document.clientHeight;
+                var doc = doc.documentElement
+                    , g = (e = doc.body) && doc.clientWidth && doc.clientHeight;
             }
             var vp = [];
-            doc && doc.clientWidth && doc.clientHeight && ("CSS1Compat" === document.compatMode || !g) ? vp = [doc.clientWidth, doc.clientHeight] : g && (vp = [doc.clientWidth, doc.clientHeight]);
+            doc && doc.clientWidth && doc.clientHeight && ("CSS1Compat" === doc.compatMode || !g) ? vp = [doc.clientWidth, doc.clientHeight] : g && (vp = [doc.clientWidth, doc.clientHeight]);
             return tool.stringify({w:vp[0],h:vp[1]});
         },
 		isLocal: function() {
@@ -382,11 +392,6 @@
         },
         getGuid : function() {
             var guidKey = '__guid',
-                nav = window.navigator,
-                doc = document,
-                screen = window.screen,
-                domain = Browser.isLocal() ? '' : document.domain.toLowerCase(),
-                ua = nav.userAgent.toLowerCase(),
                 id = $cookie.get(guidKey);
             function hash(s) {
                 var h = 0,
