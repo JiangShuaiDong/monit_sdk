@@ -316,10 +316,7 @@
                 if(+external.twGetVersion(external.twGetSecurityID(window)).replace(/\./g,"") > 1013) {
                     is360se = true;
                 }
-            }catch(err){ 
-
-                console.log(err);
-            }
+            }catch(e){}
 
             if(is360se) {
                 return "360se-noua";
