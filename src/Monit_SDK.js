@@ -28,6 +28,7 @@
             }
         } catch(e) { }
     })();
+
     var doc = document,
         nav = window.navigator,
         screen = window.screen,
@@ -598,6 +599,7 @@
             if (!MONIT_CONIFG['pid'] && !img_location) {
                 throw new TypeError('M2_PNAME or M2_URL is not null....');
             }
+            console.log(tool.encodeObject2URIString(MONIT_CONIFG));
             tool.forIn(MONIT_CONIFG,function(key,value){
                 params += '&' + key + '=' + value;
             })
