@@ -16,6 +16,11 @@
     }
 }(function () {
     "use strict";
+    window.console = window.console || (function () {  
+        var c = {}; c.log = c.warn = c.debug = c.info = c.error = c.time = c.dir = c.profile  
+        = c.clear = c.exception = c.trace = c.assert = function () { };  
+        return c;  
+    })();
     var MONIT_CONIFG = {};
     var isLocal;
 	//有时候monit.js会在file://或者res://协议下使用，判断下
@@ -462,7 +467,7 @@
                 tool.forIn(eleObj,function(key,value){
                     MONIT_CONIFG[key] = value;
                 })
-                console.log('发起埋点.......');
+                //发起埋点
                 callback();
             }, true);
         },
@@ -590,7 +595,6 @@
         postMonit: function(){
             var setIMG = new Image();
             var img_location = window.M2_URL || '';
-            var params = '';
             var user = tool.parseJSON($sessionStorage.get('M2_USER')) || {};
             MONIT_CONIFG['pid'] = window.M2_PNAME || '';
             MONIT_CONIFG['uid'] = user.uid || '';
@@ -598,11 +602,8 @@
             MONIT_CONIFG['custom_tag'] = $sessionStorage.get('M2_CUSTOM_TAG') || '';
             if (!MONIT_CONIFG['pid'] && !img_location) {
                 throw new TypeError('M2_PNAME or M2_URL is not null....');
-            }
-            console.log(tool.encodeObject2URIString(MONIT_CONIFG));
-            tool.forIn(MONIT_CONIFG,function(key,value){
-                params += '&' + key + '=' + value;
-            })
+            };
+            var params = tool.encodeObject2URIString(MONIT_CONIFG);
             setIMG.src = img_location + '?t=' + new Date().getTime() + params;
         },
           /**
