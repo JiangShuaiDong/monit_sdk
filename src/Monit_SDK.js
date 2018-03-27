@@ -387,7 +387,7 @@
             var that = this;
             try {
                 var doc = top.document.documentElement
-                    , g = (e = top.document.body) && top.document.clientWidth && top.document.clientHeight;
+                    , g = top.document.body && top.document.clientWidth && top.document.clientHeight;
             } catch (e) {
                 var doc = doc.documentElement
                     , g = (e = doc.body) && doc.clientWidth && doc.clientHeight;
