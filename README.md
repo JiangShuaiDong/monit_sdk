@@ -14,12 +14,12 @@ M2
 
  (function(){
         var _mtags = _mtags || [], w = window;
+         _mtags.push(['M2_SERVER_URL', '数据输出URL']); //数据输出URL
+        _mtags.push(['pid', '项目名称']); //项目id
+        _mtags.push(['uid', 'uid']); //用户id
+        _mtags.push(['hid', 'hid']); //酒店id
+        _mtags.push(['m2attr','cccid', '23232']); //自定义参数
         w['M2_TAGS'] = _mtags;
-        M2_TAGS.push(['M2_SERVER_URL', 'http://analysis.brandwisdom.cn/m.gif']); //数据输出URL
-        M2_TAGS.push(['pid', '项目名称']); //项目id
-        M2_TAGS.push(['uid', 'uid']); //用户id
-        M2_TAGS.push(['hid', 'hid']); //酒店id
-        M2_TAGS.push(['m2attr','cccid', '23232']); //自定义参数
         (function() {
                 var s = document.createElement('script');
                 s.type='text/javascript';

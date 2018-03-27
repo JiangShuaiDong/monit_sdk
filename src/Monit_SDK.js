@@ -517,7 +517,6 @@
             if(el.tagName.toLowerCase() == 'input') {
                 str =  el.value || '';
             } else if(el.tagName.toLowerCase() != 'body' && el.tagName.toLowerCase() != 'html') {
-                console.log(el.childNodes.length,el.tagName);
                 if(el.childNodes.length<=1){
                     str = el.innerText || el.textContent || el.value || '';
                 }
@@ -596,7 +595,6 @@
     var $monit = {
         postMonit: function(){
             var setIMG = new Image();
-
             if (!MONIT_CONIFG['pid'] && !MONIT_SERVER_URL) {
                 throw new TypeError('pid or M2_SERVER_URL is not null....');
             };
