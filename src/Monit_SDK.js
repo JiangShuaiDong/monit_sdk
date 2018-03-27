@@ -603,7 +603,7 @@
             if (!MONIT_CONIFG['pid'] && !img_location) {
                 throw new TypeError('M2_PNAME or M2_URL is not null....');
             };
-            var params = tool.encodeObject2URIString(MONIT_CONIFG);
+            var params = '&' + tool.encodeObject2URIString(MONIT_CONIFG);
             setIMG.src = img_location + '?t=' + new Date().getTime() + params;
         },
           /**
