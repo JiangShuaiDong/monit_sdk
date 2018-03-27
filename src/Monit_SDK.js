@@ -21,6 +21,7 @@
         = c.clear = c.exception = c.trace = c.assert = function () { };  
         return c;  
     })();
+    var MONIT_SERVER_URL = '';
     var MONIT_CONIFG = {};
     var isLocal;
 	//有时候monit.js会在file://或者res://协议下使用，判断下
@@ -494,20 +495,20 @@
             }
         
             obj['tagName'] = el.tagName;
+            obj['className'] = el.className;
             obj['tagText'] = $element.getText(el);
-            
-            tool.each(list,function(a,b,list){
-                if(a.name === 'cid'){
-                    if(bool){
-                        cid = a.value;
-                    }else{
-                        obj[a.name] = encodeURIComponent(a.value);
-                    }
+            tool.each(list,function(item,index,list){
+                if(item.name === 'cid' && bool){
+                    cid =item.value;
+                }else if(item.name === 'id' || item.name === 'value'){
+                    obj[item.name] = item.value;
                 }else{
-                    obj[a.name] = encodeURIComponent(a.value);
+                    if(item.name.indexOf('ng-')<0 && item.name.indexOf('m2-')>-1){
+                        obj[item.name] = encodeURIComponent(item.value);
+                    }
                 }
-                MONIT_CONIFG['cid'] = cid;
             });
+            MONIT_CONIFG['cid'] = cid;
             return tool.stringify(obj);
         },
         getText : function(el) {
@@ -516,8 +517,9 @@
             if(el.tagName.toLowerCase() == 'input') {
                 str =  el.value || '';
             } else if(el.tagName.toLowerCase() != 'body' && el.tagName.toLowerCase() != 'html') {
+                console.log(el.childNodes.length,el.tagName);
                 if(el.childNodes.length<=1){
-                    str = el.innerText || el.textContent || '';
+                    str = el.innerText || el.textContent || el.value || '';
                 }
             }
             
@@ -594,86 +596,56 @@
     var $monit = {
         postMonit: function(){
             var setIMG = new Image();
-            var img_location = window.M2_URL || '';
-            var user = tool.parseJSON($sessionStorage.get('M2_USER')) || {};
-            MONIT_CONIFG['pid'] = window.M2_PNAME || '';
-            MONIT_CONIFG['uid'] = user.uid || '';
-            MONIT_CONIFG['hid'] = user.hid || '';
-            MONIT_CONIFG['custom_tag'] = $sessionStorage.get('M2_CUSTOM_TAG') || '';
-            if (!MONIT_CONIFG['pid'] && !img_location) {
-                throw new TypeError('M2_PNAME or M2_URL is not null....');
+
+            if (!MONIT_CONIFG['pid'] && !MONIT_SERVER_URL) {
+                throw new TypeError('pid or M2_SERVER_URL is not null....');
             };
             var params = '&' + tool.encodeObject2URIString(MONIT_CONIFG);
-            setIMG.src = img_location + '?t=' + new Date().getTime() + params;
+            setIMG.src = MONIT_SERVER_URL + '?t=' + new Date().getTime() + params;
         },
-          /**
-         * 设置用户信息
-         * @param option Object
-         */
-        setUserInfo: function (option) {
-            if(tool.isArray(option)||tool.isObject(option)){
-                var _user = {
-                    uid: option.uid || '',
-                    hid: option.hid || ''
-                };
-                $sessionStorage.set('M2_USER',tool.stringify(_user));
-            };
-            tool.forIn(_user,function(key,value){
-                MONIT_CONIFG[key] = value;
+        setConifg: function(){
+            var mtags = $monit.setTags();
+            var _user = mtags.user;
+            var _tags = mtags.tags;
+            MONIT_SERVER_URL = _user.M2_SERVER_URL || '';
+            MONIT_CONIFG['pid'] = _user.pid || '';
+            MONIT_CONIFG['uid'] = _user.uid || '';
+            MONIT_CONIFG['hid'] = _user.hid || '';
+            MONIT_CONIFG['custom_tag'] = _tags || '';
+        },
+        setTags: function(){
+            var _tags = window.M2_TAGS || [];
+            var obj2 = {}, obj3 = {};
+            tool.each(_tags,function(item,index,list){
+                if(tool.isArray(item)){
+                    switch(item.length){
+                        case 2:
+                            obj2[item[0]] = item[1] || ''; 
+                            break;
+                        case 3: 
+                            obj3[item[1]] = item[2] || '';
+                            break;
+                    }
+                }
             });
+            return {
+                user: obj2,
+                tags: tool.stringify(obj3)
+            };
         },
          /**
          * 设置自定义属性
          * @param option Object
          */
-        setAttrs: function (option) {
-            if(!tool.isObject(option)){
-                throw new TypeError('格式不正确');
-            };
-            var _tag = $sessionStorage.get('M2_CUSTOM_TAG');
-            var _tagJson = tool.parseJSON(_tag);
-            if(!_tag){
-                _tagJson = option;
-            }else{
+        addCustom: function (option) {
+            if(option && tool.isObject(option)){
+                var _tag = tool.parseJSON(MONIT_CONIFG['custom_tag']) || {};
                 tool.forIn(option,function(key,value){
-                    if(tool.isArray(value) || tool.isObject(value)){
-                        _tagJson[key] = tool.stringify(value);
-                    }else{
-                        _tagJson[key] = value;
-                    }
+                    _tag[key] = value;
                 });
-            }
-            $sessionStorage.set('M2_CUSTOM_TAG',tool.stringify(_tagJson));
-        },
-        getAttr: function(name){
-            var _tag = $sessionStorage.get('M2_CUSTOM_TAG');
-            if(!_tag){
-                return '无设置自定义属性';
-            }
-            if(name){
-                return tool.parseJSON(_tag)[name];
-            }
-            return tool.parseJSON(_tag);
-        },
-        removeAttr: function(name){
-            var _tag = $sessionStorage.get('M2_CUSTOM_TAG');
-            var _tagJson = '';
-            var _newJson = {};
-            if(!_tag&&!name){
-                return '无设置自定义属性';
-            }
-            _tagJson = tool.parseJSON(_tag);
-            if(!_tagJson[name]){
-                return '未查到此属性';
-            }else{
-                tool.forIn(_tagJson,function(key,value){
-                    if(key !== name){
-                        _newJson[key] = value;
-                    }
-                })
-                $sessionStorage.set('M2_CUSTOM_TAG',tool.stringify(_newJson));
-                return '删除成功';
-            }
+                MONIT_CONIFG['custom_tag'] = tool.stringify(_tag);
+            };
+            
         }
     }
     /**
@@ -688,72 +660,51 @@
     Manager.prototype.init = function () {
         var that = this;
         $element.clickInit(function(){
+            $monit.setConifg();
             $monit.postMonit();
         });
     };
      //代码埋点方法
-     Manager.prototype.setMoint = function (el,obj,cid) {
+     Manager.prototype.setMoint = function (el,obj,cid,type) {
         var _target = el ? el.target || el.srcElement : false;
-        MONIT_CONIFG['m_type'] = 3;
+        MONIT_CONIFG['m_type'] = type || 2;
         MONIT_CONIFG['cid'] = cid;
-        MONIT_CONIFG['attributes'] = '';
-        MONIT_CONIFG['parent_attributes'] = '';
-        if(_target){
-            MONIT_CONIFG['attributes'] = $element.getAttributeList(_target,true);
-            MONIT_CONIFG['parent_attributes'] = $element.getAttributeList($element.parentNode(_target,"div"),false);
-        }
-        $monit.setAttrs(obj);
+        MONIT_CONIFG['attributes'] = $element.getAttributeList(_target,true);
+        MONIT_CONIFG['parent_attributes'] = $element.getAttributeList($element.parentNode(_target,"div"),false);
+        $monit.setConifg();
+        $monit.addCustom(obj);
         $monit.postMonit();
     };
     //埋点历史方法
     Manager.prototype._getQuest = function (el,obj,cid) {
         var _target = el ? el.target || el.srcElement : false;
-        MONIT_CONIFG['m_type'] = 3;
-        MONIT_CONIFG['cid'] = cid;
-        MONIT_CONIFG['attributes'] = '';
-        MONIT_CONIFG['parent_attributes'] = '';
-        if(_target){
-            MONIT_CONIFG['attributes'] = $element.getAttributeList(_target,true);
-            MONIT_CONIFG['parent_attributes'] = $element.getAttributeList($element.parentNode(_target,"div"),false);
-        }
-        $monit.setAttrs(obj);
+        MONIT_CONIFG['m_type'] = 2;
+        MONIT_CONIFG['cid'] = cid || '';
+        MONIT_CONIFG['attributes'] = $element.getAttributeList(_target,true);
+        MONIT_CONIFG['parent_attributes'] = $element.getAttributeList($element.parentNode(_target,"div"),false);
+        $monit.setConifg();
+        $monit.addCustom(obj);
         $monit.postMonit();
     };
 
     var baseInstance = new Manager();
     //初始化无痕埋点
     baseInstance.init();
+    baseInstance.setMoint(null,{},0,3);
     /**
      * 入口
      * @param conf
      * @returns {*}
      */
     var entrance = function (conf) {
-        if (!tool.isObject(conf)) {
-            throw new TypeError('参数不正确');
-        }
-        var options = {
-
-        };
-        tool.forIn(options, function (key) {
-            options[key] = conf[key] || options[key];
-        });
-        return '';
+        return conf;
     };
     tool.forIn({
         getQuest: '_getQuest',
-        setMoint: 'setMoint',
-        getAttr: 'getAttr',
-        setAttrs: 'setAttrs',
-        removeAttr: 'removeAttr',
-        setUserInfo: 'setUserInfo'
+        setMoint: 'setMoint'
     }, function (key, value) {
         entrance[key] = function () {
-            if(baseInstance[value]){
-                return baseInstance[value].apply(null, arguments);
-            }else{
-                return $monit[value].apply(null, arguments);
-            }
+            return baseInstance[value].apply(null, arguments);
         };
     });
     entrance.version = '0.9.0';
