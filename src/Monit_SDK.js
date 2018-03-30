@@ -370,7 +370,7 @@
         getReferrer: function () {
             var referrerKey = "__referrer",
                 id = $sessionStorage.get(referrerKey),
-                newId = window.location.referrer,
+                newId = doc.referrer,
                 url = doc.URL || window.location.href;
             if(!id){
                 if(newId && newId != id){
