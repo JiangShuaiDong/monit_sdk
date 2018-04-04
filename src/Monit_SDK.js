@@ -658,6 +658,7 @@
     Manager.prototype.init = function () {
         var that = this;
         $element.clickInit(function(){
+            Browser.init();
             $monit.setConifg();
             $monit.postMonit();
         });
