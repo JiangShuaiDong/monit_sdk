@@ -373,12 +373,7 @@
                 newId = doc.referrer,
                 url = doc.URL || window.location.href;
             if(!id){
-                if(newId && newId != id){
-                    id = newId;
-                }
-                if(!newId){
-                    id = Browser.getUrl();
-                }
+                id = newId || '';
                 $sessionStorage.set(referrerKey,id);
             }
             return id;

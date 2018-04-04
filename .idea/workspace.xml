@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="415f3949-33b1-4ce0-b421-c91708bf1930" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
       <change beforePath="$PROJECT_DIR$/src/Monit_SDK.js" afterPath="$PROJECT_DIR$/src/Monit_SDK.js" />
     </list>
     <ignored path="monit_sdk.iws" />
@@ -28,8 +27,8 @@
       <file leaf-file-name="Monit_SDK.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Monit_SDK.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="463">
-              <caret line="380" column="17" lean-forward="true" selection-start-line="380" selection-start-column="17" selection-end-line="380" selection-end-column="17" />
+            <state relative-caret-position="412">
+              <caret line="377" column="13" lean-forward="true" selection-start-line="377" selection-start-column="13" selection-end-line="377" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -238,12 +237,12 @@
       <workItem from="1522651390338" duration="2000" />
       <workItem from="1522651418796" duration="321000" />
       <workItem from="1522652061488" duration="994000" />
-      <workItem from="1522737780759" duration="3990000" />
+      <workItem from="1522737780759" duration="5497000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="12472000" />
+    <option name="totallyTimeSpent" value="13979000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -421,8 +420,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Monit_SDK.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="463">
-          <caret line="380" column="17" lean-forward="true" selection-start-line="380" selection-start-column="17" selection-end-line="380" selection-end-column="17" />
+        <state relative-caret-position="412">
+          <caret line="377" column="13" lean-forward="true" selection-start-line="377" selection-start-column="13" selection-end-line="377" selection-end-column="13" />
           <folding />
         </state>
       </provider>
