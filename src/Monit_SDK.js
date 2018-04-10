@@ -481,22 +481,25 @@
                     attributes: $element.getAttributeList(e, _target, true),
                     parent_attributes: $element.getAttributeList(e, $element.parentNode(_target, "div"), false)
                 };
-                if(!Browser.getSinglePageUrl()){
-                    Browser.init();
-                    MONIT_CONIFG['m_type'] = 3;
-                    MONIT_CONIFG['cid'] = 0;
-                    MONIT_CONIFG['attributes'] = $element.getAttributeList(false, true);
-                    MONIT_CONIFG['parent_attributes'] = $element.getAttributeList($element.parentNode(false, "div"), false);
-                    $monit.setConifg();
-                    $monit.addCustom({});
-                    $monit.postMonit();
-                };
+
                 tool.forIn(eleObj, function (key, value) {
                     MONIT_CONIFG[key] = value;
                 })
                 //发起埋点
                 callback();
             }, true);
+            //监听hashchange事件
+            window.addEventListener('hashchange', function(e) {
+                $sessionStorage.set('__referrer',e.oldURL);
+                Browser.init();
+                MONIT_CONIFG['m_type'] = 3;
+                MONIT_CONIFG['cid'] = 0;
+                MONIT_CONIFG['attributes'] = $element.getAttributeList(false, true);
+                MONIT_CONIFG['parent_attributes'] = $element.getAttributeList($element.parentNode(false, "div"), false);
+                $monit.setConifg();
+                $monit.addCustom({});
+                $monit.postMonit();
+            }, false);
         },
         parentNode: function (el, tagName, deep) {
             deep = deep || 50;
