@@ -1,4 +1,3 @@
-
 !function (entrance) {
     "use strict";
     if ("object" === typeof exports && "undefined" !== typeof module) {
@@ -16,23 +15,26 @@
     }
 }(function () {
     "use strict";
-    window.console = window.console || (function () {  
-        var c = {}; c.log = c.warn = c.debug = c.info = c.error = c.time = c.dir = c.profile  
-        = c.clear = c.exception = c.trace = c.assert = function () { };  
-        return c;  
+    window.console = window.console || (function () {
+        var c = {};
+        c.log = c.warn = c.debug = c.info = c.error = c.time = c.dir = c.profile
+            = c.clear = c.exception = c.trace = c.assert = function () {
+        };
+        return c;
     })();
     var MONIT_SERVER_URL = '';
     var MONIT_CONIFG = {};
     var isLocal;
-	//有时候monit.js会在file://或者res://协议下使用，判断下
-    (function() {
+    //有时候monit.js会在file://或者res://协议下使用，判断下
+    (function () {
         isLocal = true;
         try {
             var protocol = location.protocol.toLowerCase();
-            if(protocol == 'http:' || protocol == 'https:') {
+            if (protocol == 'http:' || protocol == 'https:') {
                 isLocal = false;
             }
-        } catch(e) { }
+        } catch (e) {
+        }
     })();
 
     var doc = document,
@@ -60,12 +62,12 @@
         },
         set: function (name, value, days, domain, path) {
             var date = new Date();
-            days = days || 730; // two years
+            days = days || 30; // two years
             path = path || '/';
             date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
             var expires = '; expires=' + date.toGMTString();
             var cookieValue = name + '=' + value + expires + '; path=' + path;
-            
+
             if (domain) {
                 cookieValue += '; domain=' + domain;
             }
@@ -78,8 +80,8 @@
         }
     };
     /**
-    * localStorage函数
-    */
+     * localStorage函数
+     */
     var $localStorage = {
         is: function () {
             var mod = 'modernizr';
@@ -153,7 +155,7 @@
      * 帮助函数
      */
     var tool = {
-        trim : function(s) {
+        trim: function (s) {
             return s.replace(/^[\s\xa0\u3000]+|[\u3000\xa0\s]+$/g, "");
         },
         encodeObject2URIString: function (obj) {
@@ -277,79 +279,80 @@
 
     //浏览器相关信息
     var Browser = {
-        init: function(){
+        init: function () {
             var obj = {
                 title: doc.title || '',
                 url: Browser.getUrl(),
                 guid: Browser.getGuid(),
                 referrer: Browser.getReferrer(),
-                ua:ua,
+                ua: ua,
                 browser: Browser.getBrowser(),
                 viewport: Browser.getViewportSize(),
                 lang: Browser.getLang(),
                 appenv: Browser.getAppenv(),
                 is_admin: Browser.isAdmin
             };
-            tool.forIn(obj,function(key,value){
+            tool.forIn(obj, function (key, value) {
                 MONIT_CONIFG[key] = value;
             })
         },
         isAdmin: $cookie.get('is_admin') || '',
-        getLang: function(){
+        getLang: function () {
             var _lang = $cookie.get('felangague');
-            if(!_lang){
+            if (!_lang) {
                 _lang = nav.language || nav.systemLanguage
             }
             return _lang;
         },
-        getBrowser : function() {
+        getBrowser: function () {
             var browsers = {
-                '360se-ua':'360se',
-                'TT':'tencenttraveler',
-                'Maxthon':'maxthon',
-                'GreenBrowser':'greenbrowser',
-                'Sogou':'se 1.x / se 2.x',
-                'TheWorld':'theworld'
+                '360se-ua': '360se',
+                'TT': 'tencenttraveler',
+                'Maxthon': 'maxthon',
+                'GreenBrowser': 'greenbrowser',
+                'Sogou': 'se 1.x / se 2.x',
+                'TheWorld': 'theworld'
             };
 
-            for(var i in browsers){
-                if(ua.indexOf(browsers[i]) > -1) {
+            for (var i in browsers) {
+                if (ua.indexOf(browsers[i]) > -1) {
                     return i;
                 }
             }
 
             var is360se = false;
-            try{
-                if(+external.twGetVersion(external.twGetSecurityID(window)).replace(/\./g,"") > 1013) {
+            try {
+                if (+external.twGetVersion(external.twGetSecurityID(window)).replace(/\./g, "") > 1013) {
                     is360se = true;
                 }
-            }catch(e){}
+            } catch (e) {
+            }
 
-            if(is360se) {
+            if (is360se) {
                 return "360se-noua";
             }
 
             var result = ua.match(/(msie|chrome|safari|firefox|opera|trident)/);
             result = result ? result[0] : '';
 
-            if(result == 'msie') {
+            if (result == 'msie') {
                 result = ua.match(/msie[^;]+/) + '';
-            } else if(result == 'trident') {
-                ua.replace(/trident\/[0-9].*rv[ :]([0-9.]+)/ig, function(a, c) {
+            } else if (result == 'trident') {
+                ua.replace(/trident\/[0-9].*rv[ :]([0-9.]+)/ig, function (a, c) {
                     result = 'msie ' + c;
                 });
             }
 
             return result;
         },
-        getAppenv: function(){
+        getAppenv: function () {
             var env = $cookie.get('appenv') || '';
             var s_env = $sessionStorage.get('appenv');
-            if(!env){
-                if(!s_env){
+            if (!env) {
+                if (!s_env) {
                     env = 'test';
                 }
-                $sessionStorage.set('appenv',env);
+                $sessionStorage.set('appenv', env);
             }
             return env;
         },
@@ -366,15 +369,32 @@
             }
             return url;
         },
+        //设置单页切换URL
+        setSinglePageUrl: function () {
+            var url = Browser.getUrl();
+            $sessionStorage.set('__singlePageUrl',url);
+        },
+        //获取单页切换URL
+        getSinglePageUrl: function () {
+            var bool = false; //true 当前页面 false 非当前页面
+            var thisUrl = doc.URL;
+            var __singlePageUrl = $sessionStorage.get('__singlePageUrl');
+
+            if(__singlePageUrl.indexOf(thisUrl)>-1){
+                bool = true;
+                $sessionStorage.set('__referrerTemp',thisUrl);
+            }
+            $sessionStorage.set('__singlePageUrl',thisUrl);
+            return bool
+        },
         //获取来源
         getReferrer: function () {
             var referrerKey = "__referrer",
                 id = $sessionStorage.get(referrerKey),
-                newId = doc.referrer,
-                url = doc.URL || window.location.href;
-            if(!id){
+                newId = doc.referrer;
+            if (!id) {
                 id = newId || '';
-                $sessionStorage.set(referrerKey,id);
+                $sessionStorage.set(referrerKey, id);
             }
             return id;
         },
@@ -390,16 +410,17 @@
             }
             var vp = [];
             doc && doc.clientWidth && doc.clientHeight && ("CSS1Compat" === doc.compatMode || !g) ? vp = [doc.clientWidth, doc.clientHeight] : g && (vp = [doc.clientWidth, doc.clientHeight]);
-            return tool.stringify({w:vp[0],h:vp[1]});
+            return tool.stringify({w: vp[0], h: vp[1]});
         },
-        getGuid : function() {
+        getGuid: function () {
             var guidKey = '__guid',
                 id = $cookie.get(guidKey);
+
             function hash(s) {
                 var h = 0,
                     g = 0,
                     i = s.length - 1;
-                for(i; i>= 0; i--) {
+                for (i; i >= 0; i--) {
                     var code = parseInt(s.charCodeAt(i), 10);
                     h = ((h << 6) & 0xfffffff) + code + (code << 14);
                     if ((g = h & 0xfe00000) != 0) {
@@ -414,35 +435,36 @@
                     sLen = s.length,
                     hLen = window.history.length;
 
-                while(hLen) {
+                while (hLen) {
                     s += (hLen--) ^ (sLen++);
                 }
 
                 return (Math.round(Math.random() * 2147483647) ^ hash(s)) * 2147483647;
             }
-            if(!id) {
-                id = [ hash(isLocal ? '' : doc.domain), guid(), +new Date + Math.random() + Math.random() ].join('.');
+
+            if (!id) {
+                id = [hash(isLocal ? '' : doc.domain), guid(), +new Date + Math.random() + Math.random()].join('.');
 
                 var config = {
-                    expires : 300,
+                    expires: 30,
                     domain: 'localhost',
-                    path : '/'
+                    path: '/'
                 };
 
                 //如果是设置了guidCookieDomains，__guid放在guidCookieDomain域下
-                var guidCookieDomains = ['bw.cn','brandwisdom.cn','jointwisdom.cn'];
-                if(guidCookieDomains.length) {
-                    for(var i = 0; i < guidCookieDomains.length; i++) {
+                var guidCookieDomains = ['bw.cn', 'brandwisdom.cn', 'jointwisdom.cn'];
+                if (guidCookieDomains.length) {
+                    for (var i = 0; i < guidCookieDomains.length; i++) {
                         var guidCookieDomain = guidCookieDomains[i],
                             gDomain = '.' + guidCookieDomain;
 
-                        if((domain.indexOf(gDomain) > 0 && domain.lastIndexOf(gDomain) == domain.length - gDomain.length) || domain == guidCookieDomain) {
+                        if ((domain.indexOf(gDomain) > 0 && domain.lastIndexOf(gDomain) == domain.length - gDomain.length) || domain == guidCookieDomain) {
                             config.domain = gDomain;
                             break;
                         }
                     }
                 }
-                $cookie.set(guidKey, id, config.expires,config.domain,config.path);
+                $cookie.set(guidKey, id, config.expires, config.domain, config.path);
             }
 
             return id;
@@ -452,53 +474,65 @@
      * Element元素事件函数
      */
     var $element = {
-        clickInit: function(callback){
+        clickInit: function (callback) {
             $element._event(document, 'click', function (e) {
                 var _target = e.target || e.srcElement;
                 var eleObj = {
                     m_type: 1,
-                    attributes: $element.getAttributeList(_target,true),
-                    parent_attributes: $element.getAttributeList($element.parentNode(_target,"div"),false)
+                    attributes: $element.getAttributeList(e, _target, true),
+                    parent_attributes: $element.getAttributeList(e, $element.parentNode(_target, "div"), false)
                 };
-                tool.forIn(eleObj,function(key,value){
+                if(!Browser.getSinglePageUrl()){
+                    MONIT_CONIFG['m_type'] = 3;
+                    MONIT_CONIFG['cid'] = 0;
+                    MONIT_CONIFG['attributes'] = $element.getAttributeList(false, true);
+                    MONIT_CONIFG['parent_attributes'] = $element.getAttributeList($element.parentNode(false, "div"), false);
+                    $monit.setConifg();
+                    $monit.addCustom({});
+                    $monit.postMonit();
+                };
+                tool.forIn(eleObj, function (key, value) {
                     MONIT_CONIFG[key] = value;
                 })
                 //发起埋点
                 callback();
             }, true);
         },
-        parentNode : function(el, tagName, deep) {
+        parentNode: function (el, tagName, deep) {
             deep = deep || 50;
             tagName = tagName.toUpperCase();
-            if(el.tagName === 'BODY' || el.tagName === 'HTML'){
+            if (el.tagName === 'BODY' || el.tagName === 'HTML') {
                 return el;
             }
-            while(el && deep-- > 0) {
-                if(el.tagName === tagName && el.className !=='') {
+            while (el && deep-- > 0) {
+                if (el.tagName === tagName && el.className !== '') {
                     return el;
                 }
                 el = el.parentNode;
             }
             return el;
         },
-        getAttributeList: function(el,bool){
+        getAttributeList: function (e, el, bool) {
             var obj = {};
             var list = el.attributes || [];
             var cid = '';
-            if(!el.tagName){
+            if (!el.tagName) {
                 return '';
             }
-        
+            obj['pageX'] = e.pageX;
+            obj['pageY'] = e.pageY;
+            obj['sw'] = window.screen.width;
+            obj['sh'] = window.screen.height;
             obj['tagName'] = el.tagName;
             obj['className'] = el.className;
             obj['tagText'] = $element.getText(el);
-            tool.each(list,function(item,index,list){
-                if(item.name === 'cid' && bool){
-                    cid =item.value;
-                }else if(item.name === 'id' || item.name === 'value'){
+            tool.each(list, function (item, index, list) {
+                if (item.name === 'cid' && bool) {
+                    cid = item.value;
+                } else if (item.name === 'id' || item.name === 'value') {
                     obj[item.name] = item.value;
-                }else{
-                    if(item.name.indexOf('ng-')<0 && item.name.indexOf('m2-')>-1){
+                } else {
+                    if (item.name.indexOf('ng-') < 0 && item.name.indexOf('m2-') > -1) {
                         obj[item.name] = encodeURIComponent(item.value);
                     }
                 }
@@ -506,17 +540,22 @@
             MONIT_CONIFG['cid'] = cid;
             return tool.stringify(obj);
         },
-        getText : function(el) {
+        getText: function (el) {
             var str = "";
 
-            if(el.tagName.toLowerCase() == 'input') {
-                str =  el.value || '';
-            } else if(el.tagName.toLowerCase() != 'body' && el.tagName.toLowerCase() != 'html') {
-                if(el.childNodes.length<=1){
-                    str = el.innerText || el.textContent || el.value || '';
+            if (el.tagName.toLowerCase() == 'input') {
+                str = el.value || '';
+            } else if (el.tagName.toLowerCase() != 'body' && el.tagName.toLowerCase() != 'html') {
+                if (el.childNodes.length <= 1) {
+                    str = el.innerText || el.textContent || el.value || el.title || '';
                 }
+            } else if (el.tagName.toLowerCase() == 'a') {
+                if (el.childNodes.length <= 1) {
+                    str = el.innerText || el.textContent || el.value || el.title || '';
+                }
+                str = str ? str : el.src;
             }
-            
+
             return str.replace(/^\s*|\s*$/g, "").substr(0, 100);
         },
         _event: (function () {
@@ -531,7 +570,7 @@
                     console.error('No valid element provided to register_event');
                     return;
                 }
-    
+
                 if (element.addEventListener) {
                     element.addEventListener(type, handler, !!useCapture);
                 } else {
@@ -540,14 +579,14 @@
                     element[ontype] = makeHandler(element, handler, old_handler);
                 }
             };
-    
+
             function makeHandler(element, new_handler, old_handlers) {
                 var handler = function (event) {
                     event = event || fixEvent(window.event);
                     if (!event) {
                         return undefined;
                     }
-    
+
                     var ret = true;
                     var old_result, new_result;
                     //检测是否是函数
@@ -555,17 +594,17 @@
                         old_result = old_handlers(event);
                     }
                     new_result = new_handler.call(element, event);
-    
+
                     if ((false === old_result) || (false === new_result)) {
                         ret = false;
                     }
-    
+
                     return ret;
                 };
-    
+
                 return handler;
             }
-    
+
             function fixEvent(event) {
                 if (event) {
                     event.preventDefault = fixEvent.preventDefault;
@@ -573,13 +612,14 @@
                 }
                 return event;
             }
+
             fixEvent.preventDefault = function () {
                 this.returnValue = false;
             };
             fixEvent.stopPropagation = function () {
                 this.cancelBubble = true;
             };
-    
+
             return register_event;
         })(),
 
@@ -588,15 +628,16 @@
      * monit支撑函数
      */
     var $monit = {
-        postMonit: function(){
+        postMonit: function () {
             var setIMG = new Image();
             if (!MONIT_CONIFG['pid'] && !MONIT_SERVER_URL) {
                 throw new TypeError('pid or M2_SERVER_URL is not null....');
-            };
+            }
+            ;
             var params = '&' + tool.encodeObject2URIString(MONIT_CONIFG);
             setIMG.src = MONIT_SERVER_URL + '?t=' + new Date().getTime() + params;
         },
-        setConifg: function(){
+        setConifg: function () {
             var mtags = $monit.setTags();
             var _user = mtags.user;
             var _tags = mtags.tags;
@@ -606,16 +647,16 @@
             MONIT_CONIFG['hid'] = _user.hid || '';
             MONIT_CONIFG['custom_tag'] = _tags || '';
         },
-        setTags: function(){
+        setTags: function () {
             var _tags = window.M2_TAGS || [];
             var obj2 = {}, obj3 = {};
-            tool.each(_tags,function(item,index,list){
-                if(tool.isArray(item)){
-                    switch(item.length){
+            tool.each(_tags, function (item, index, list) {
+                if (tool.isArray(item)) {
+                    switch (item.length) {
                         case 2:
-                            obj2[item[0]] = item[1] || ''; 
+                            obj2[item[0]] = item[1] || '';
                             break;
-                        case 3: 
+                        case 3:
                             obj3[item[1]] = item[2] || '';
                             break;
                     }
@@ -626,19 +667,20 @@
                 tags: tool.stringify(obj3)
             };
         },
-         /**
+        /**
          * 设置自定义属性
          * @param option Object
          */
         addCustom: function (option) {
-            if(option && tool.isObject(option)){
+            if (option && tool.isObject(option)) {
                 var _tag = tool.parseJSON(MONIT_CONIFG['custom_tag']) || {};
-                tool.forIn(option,function(key,value){
+                tool.forIn(option, function (key, value) {
                     _tag[key] = value;
                 });
                 MONIT_CONIFG['custom_tag'] = tool.stringify(_tag);
-            };
-            
+            }
+            ;
+
         }
     }
     /**
@@ -646,36 +688,38 @@
      * @constructor
      */
     var Manager = function () {
-        Browser.init();
+
     };
-   
     //埋点初始化方法
     Manager.prototype.init = function () {
-        var that = this;
-        $element.clickInit(function(){
+        //注入url防止单页web应用
+        Browser.setSinglePageUrl();
+        $element.clickInit(function () {
             Browser.init();
             $monit.setConifg();
             $monit.postMonit();
         });
     };
-     //代码埋点方法
-     Manager.prototype.setMoint = function (el,obj,cid,type) {
+    //代码埋点方法
+    Manager.prototype.setMoint = function (el, obj, cid, type) {
         var _target = el ? el.target || el.srcElement : false;
+        Browser.init();
         MONIT_CONIFG['m_type'] = type || 2;
         MONIT_CONIFG['cid'] = cid;
-        MONIT_CONIFG['attributes'] = $element.getAttributeList(_target,true);
-        MONIT_CONIFG['parent_attributes'] = $element.getAttributeList($element.parentNode(_target,"div"),false);
+        MONIT_CONIFG['attributes'] = $element.getAttributeList(_target, true);
+        MONIT_CONIFG['parent_attributes'] = $element.getAttributeList($element.parentNode(_target, "div"), false);
         $monit.setConifg();
         $monit.addCustom(obj);
         $monit.postMonit();
     };
     //埋点历史方法
-    Manager.prototype._getQuest = function (el,obj,cid) {
+    Manager.prototype._getQuest = function (el, obj, cid) {
         var _target = el ? el.target || el.srcElement : false;
+        Browser.init();
         MONIT_CONIFG['m_type'] = 2;
         MONIT_CONIFG['cid'] = cid || '';
-        MONIT_CONIFG['attributes'] = $element.getAttributeList(_target,true);
-        MONIT_CONIFG['parent_attributes'] = $element.getAttributeList($element.parentNode(_target,"div"),false);
+        MONIT_CONIFG['attributes'] = $element.getAttributeList(_target, true);
+        MONIT_CONIFG['parent_attributes'] = $element.getAttributeList($element.parentNode(_target, "div"), false);
         $monit.setConifg();
         $monit.addCustom(obj);
         $monit.postMonit();
@@ -684,7 +728,7 @@
     var baseInstance = new Manager();
     //初始化无痕埋点
     baseInstance.init();
-    baseInstance.setMoint(null,{},0,3);
+    baseInstance.setMoint(null, {}, 0, 3);
     /**
      * 入口
      * @param conf
