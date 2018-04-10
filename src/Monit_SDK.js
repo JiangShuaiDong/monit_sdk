@@ -395,9 +395,11 @@
             return tool.stringify({w: vp[0], h: vp[1]});
         },
         getGuid: function () {
-            var guidKey = '__guid',
+            var guidKey = '_guid',
                 id = $cookie.get(guidKey);
-
+            if($cookie.get('__guid')){
+                $cookie.remove('__guid');
+            }
             function hash(s) {
                 var h = 0,
                     g = 0,
