@@ -382,9 +382,8 @@
 
             if(__singlePageUrl.indexOf(thisUrl)>-1){
                 bool = true;
-                $sessionStorage.set('__referrerTemp',thisUrl);
             }
-            $sessionStorage.set('__singlePageUrl',thisUrl);
+            $sessionStorage.set('__singlePageUrl',doc.URL);
             return bool
         },
         //获取来源
@@ -483,6 +482,7 @@
                     parent_attributes: $element.getAttributeList(e, $element.parentNode(_target, "div"), false)
                 };
                 if(!Browser.getSinglePageUrl()){
+                    Browser.init();
                     MONIT_CONIFG['m_type'] = 3;
                     MONIT_CONIFG['cid'] = 0;
                     MONIT_CONIFG['attributes'] = $element.getAttributeList(false, true);
@@ -632,8 +632,7 @@
             var setIMG = new Image();
             if (!MONIT_CONIFG['pid'] && !MONIT_SERVER_URL) {
                 throw new TypeError('pid or M2_SERVER_URL is not null....');
-            }
-            ;
+            };
             var params = '&' + tool.encodeObject2URIString(MONIT_CONIFG);
             setIMG.src = MONIT_SERVER_URL + '?t=' + new Date().getTime() + params;
         },
