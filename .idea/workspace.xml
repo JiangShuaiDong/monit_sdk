@@ -27,8 +27,8 @@
       <file leaf-file-name="Monit_SDK.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Monit_SDK.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="228">
-              <caret line="397" column="33" lean-forward="true" selection-start-line="397" selection-start-column="33" selection-end-line="397" selection-end-column="33" />
+            <state relative-caret-position="503">
+              <caret line="75" column="33" lean-forward="true" selection-start-line="75" selection-start-column="33" selection-end-line="75" selection-end-column="33" />
               <folding />
             </state>
           </provider>
@@ -239,12 +239,12 @@
       <workItem from="1522737780759" duration="7846000" />
       <workItem from="1523174914666" duration="601000" />
       <workItem from="1523178146673" duration="367000" />
-      <workItem from="1523260163582" duration="13951000" />
+      <workItem from="1523260163582" duration="14485000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="31247000" />
+    <option name="totallyTimeSpent" value="31781000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -501,8 +501,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Monit_SDK.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="397" column="33" lean-forward="true" selection-start-line="397" selection-start-column="33" selection-end-line="397" selection-end-column="33" />
+        <state relative-caret-position="503">
+          <caret line="75" column="33" lean-forward="true" selection-start-line="75" selection-start-column="33" selection-end-line="75" selection-end-column="33" />
           <folding />
         </state>
       </provider>

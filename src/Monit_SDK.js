@@ -75,7 +75,7 @@
         },
         remove: function (name) {
             if ($cookie.get(name)) {
-                $cookie.set(name, '', -1, '/');
+                $cookie.set(name, '', -1, domain,'/');
             }
         }
     };
