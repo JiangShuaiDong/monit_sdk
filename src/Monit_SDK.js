@@ -369,23 +369,6 @@
             }
             return url;
         },
-        //设置单页切换URL
-        setSinglePageUrl: function () {
-            var url = Browser.getUrl();
-            $sessionStorage.set('__singlePageUrl',url);
-        },
-        //获取单页切换URL
-        getSinglePageUrl: function () {
-            var bool = false; //true 当前页面 false 非当前页面
-            var thisUrl = doc.URL;
-            var __singlePageUrl = $sessionStorage.get('__singlePageUrl');
-
-            if(__singlePageUrl.indexOf(thisUrl)>-1){
-                bool = true;
-            }
-            $sessionStorage.set('__singlePageUrl',doc.URL);
-            return bool
-        },
         //获取来源
         getReferrer: function () {
             var referrerKey = "__referrer",
@@ -488,7 +471,7 @@
                 //发起埋点
                 callback();
             }, true);
-            //监听hashchange事件
+            //监听hashchange事件 注入url防止单页web应用
             window.addEventListener('hashchange', function(e) {
                 $sessionStorage.set('__referrer',e.oldURL);
                 Browser.init();
@@ -694,8 +677,6 @@
     };
     //埋点初始化方法
     Manager.prototype.init = function () {
-        //注入url防止单页web应用
-        Browser.setSinglePageUrl();
         $element.clickInit(function () {
             Browser.init();
             $monit.setConifg();
