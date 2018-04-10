@@ -73,7 +73,7 @@
             }
             doc.cookie = cookieValue;
         },
-        remove: function (name) {
+        remove: function (name,domain) {
             if ($cookie.get(name)) {
                 $cookie.set(name, '', -1, domain,'/');
             }
@@ -397,9 +397,7 @@
         getGuid: function () {
             var guidKey = 'GUID',
                 id = $cookie.get(guidKey);
-            if($cookie.get('__guid')){
-                $cookie.remove('__guid');
-            }
+
             function hash(s) {
                 var h = 0,
                     g = 0,
@@ -447,6 +445,9 @@
                             break;
                         }
                     }
+                }
+                if($cookie.get('__guid')){
+                    $cookie.remove('__guid',config.domain);
                 }
                 $cookie.set(guidKey, id, config.expires, config.domain, config.path);
             }
