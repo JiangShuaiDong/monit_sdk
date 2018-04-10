@@ -62,7 +62,7 @@
         },
         set: function (name, value, days, domain, path) {
             var date = new Date();
-            days = days || 30; // two years
+            days = days || 1; // two years
             path = path || '/';
             date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
             var expires = '; expires=' + date.toGMTString();
@@ -428,7 +428,7 @@
                 id = [hash(isLocal ? '' : doc.domain), guid(), +new Date + Math.random() + Math.random()].join('.');
 
                 var config = {
-                    expires: 30,
+                    expires: 1,
                     domain: 'localhost',
                     path: '/'
                 };
