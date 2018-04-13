@@ -73,9 +73,9 @@
             }
             doc.cookie = cookieValue;
         },
-        remove: function (name,domain) {
+        remove: function (name, domain) {
             if ($cookie.get(name)) {
-                $cookie.set(name, '', -1, domain,'/');
+                $cookie.set(name, '', -1, domain, '/');
             }
         }
     };
@@ -446,8 +446,8 @@
                         }
                     }
                 }
-                if($cookie.get('__guid')){
-                    $cookie.remove('__guid',config.domain);
+                if ($cookie.get('__guid')) {
+                    $cookie.remove('__guid', config.domain);
                 }
                 $cookie.set(guidKey, id, config.expires, config.domain, config.path);
             }
@@ -475,8 +475,8 @@
                 callback();
             }, true);
             //监听hashchange事件 注入url防止单页web应用
-            window.addEventListener('hashchange', function(e) {
-                $sessionStorage.set('__referrer',e.oldURL);
+            window.addEventListener('hashchange', function (e) {
+                $sessionStorage.set('__referrer', e.oldURL);
                 Browser.init();
                 MONIT_CONIFG['m_type'] = 3;
                 MONIT_CONIFG['cid'] = 0;
@@ -536,13 +536,17 @@
                 str = el.value || '';
             } else if (el.tagName.toLowerCase() != 'body' && el.tagName.toLowerCase() != 'html') {
                 if (el.childNodes.length <= 1) {
-                    str = el.innerText || el.textContent || el.value || el.title || '';
+                    str = el.nodeValue || el.innerText || el.textContent || el.value || el.title || '';
                 }
             } else if (el.tagName.toLowerCase() == 'a') {
                 if (el.childNodes.length <= 1) {
-                    str = el.innerText || el.textContent || el.value || el.title || '';
+                    str = el.nodeValue || el.innerText || el.textContent || el.value || el.title || '';
                 }
                 str = str ? str : el.src;
+            } else {
+                if (el.childNodes.length <= 1) {
+                    str = el.nodeValue || el.innerText || el.textContent || el.value || el.title || '';
+                }
             }
 
             return str.replace(/^\s*|\s*$/g, "").substr(0, 100);
@@ -621,7 +625,8 @@
             var setIMG = new Image();
             if (!MONIT_CONIFG['pid'] && !MONIT_SERVER_URL) {
                 throw new TypeError('pid or M2_SERVER_URL is not null....');
-            };
+            }
+            ;
             var params = '&' + tool.encodeObject2URIString(MONIT_CONIFG);
             setIMG.src = MONIT_SERVER_URL + '?t=' + new Date().getTime() + params;
         },
